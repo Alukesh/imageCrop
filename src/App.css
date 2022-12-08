@@ -6,27 +6,29 @@
 }
 .img-preview {
   overflow: hidden;
+  
 }
-.crop{
-  margin: 0 auto;
-  width: 800px;
+.profile__crop{
+  width: 500px;
   padding: 20px;
   border-radius: 10px;
   /* border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0; */
   background-color: #fff;
-  border: 1px solid rgb(8 21 66 / 12%);
+
+  z-index: 100;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 40px rgb(8 21 66 / 15%);
+  transform: translate(-65%, -50%);
+  box-shadow: 0 0 40px rgba(8, 21, 66,  5%);
+
 } 
 .cropped_img{
   width: 600px;
+  aspect-ratio: 1/1;
   max-width: 50%;
   border: 1px solid rebeccapurple;
   border-radius: 50%;
-  aspect-ratio: 1/1;
 }
 .img-preview{
   width: 600px;
@@ -40,7 +42,7 @@
 
 
 
-button {
+.learn-more {
   position: relative;
   display: inline-block;
   cursor: pointer;
@@ -80,7 +82,7 @@ button {
   background: #fff;
  }
  
- button.learn-more .circle .icon.arrow {
+ .learn-more .circle .icon.arrow {
   transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
   left: 0.625rem;
   width: 1.125rem;
@@ -88,7 +90,7 @@ button {
   background: none;
  }
  
- button.learn-more .circle .icon.arrow::before {
+ .learn-more .circle .icon.arrow::before {
   position: absolute;
   content: "";
   top: -0.29rem;
@@ -100,7 +102,7 @@ button {
   transform: rotate(45deg);
  }
  
- button.learn-more .button-text {
+ .learn-more .button-text {
   transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
   position: absolute;
   top: 0;
@@ -116,17 +118,15 @@ button {
   text-transform: uppercase;
  }
  
- button:hover .circle {
+ .learn-more:hover .circle {
   width: 100%;
  }
  
- button:hover .circle .icon.arrow {
+ .learn-more:hover .circle .icon.arrow {
   background: #fff;
   transform: translate(1rem, 0);
  }
  
- button:hover .button-text {
+ .learn-more:hover .button-text {
   color: #fff;
  }
-
- 

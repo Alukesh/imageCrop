@@ -5,16 +5,19 @@ import "cropperjs/dist/cropper.css"
 const defaultSrc =
   "https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg";
 
-const Crop: React.FC = () => {
-    const [image, setImage] = useState('defaultSrc')
-    const [cropData, setCropData] = useState('defaultSrc')
+const Crop: React.FC = ({readURL, close, setUrl, id} : any) => {
+    const [img, setImg] = useState({});
+    const [image, setImage] = useState()
+    const [cropData, setCropData] = useState(defaultSrc)
     const [cropper, setCropper] = useState<Cropper>()
     const imageRef = useRef<HTMLImageElement>(null)
+    // const { changePhoto } = useActions();
 
     const onChange = (e: any) => {
         e.preventDefault()
         let files;
         console.log(e.target.files[0]);
+        setImg(e.target.files[0])
         try {
             if (e.dataTransfer) {
                 files = e.dataTransfer.files
@@ -25,34 +28,54 @@ const Crop: React.FC = () => {
             const reader = new FileReader()
             reader.onload = () => {
                 setImage(reader.result as any);
-                console.log(reader.result);
+                // console.log(reader.result);
             }
             reader.readAsDataURL(files[0])
         }
         catch (e) {
             const blue = '\x1b[34m'
-
-            console.error(blue+ 'не был выбран файл кртинки профиля',e);
-            
+            console.error(blue+ 'не был выбран файл кaртинки профиля',e);  
         }
     }
     
+    //read js data URL As  File
+    const convertDataURLToImageData =  async (URI: any, name: string, type: string) => {
+
+        const imgfile = new File([await (await fetch(URI)).blob()], name, {type: type})
+   
+        return imgfile
+    }
 
     const getCropData = () => {
-        if (typeof cropper !== "undefined") {
+        //convert img file to cropped data URL
+        if (typeof cropper !== "undefined" && image) {
+            const newURL = cropper?.getCroppedCanvas()?.toDataURL()
           setCropData(cropper.getCroppedCanvas().toDataURL());
+        
+          //convert cropped data URL to file
+          (async () => {   
+            const imgFile: any = await convertDataURLToImageData(newURL, img.name, img.type)
+            // .then((imageData) => imageData )
+         console.log('\x1b[34m data URL новой картинки',newURL)
+            console.log('\x1b[34m Первичный файл картинки',img); 
+             console.log('\x1b[34m Новый сформированный файл картинки',imgFile);
+             const formData = new FormData();
+             formData.append("image", imgFile);
+         console.log(id, formData);
+        })();  
         }
+
     };
 
 
     return (
-        <div className='crop'>
-            {/* cr */}
+        <div className='profile__crop'>
+            
             <div>
-                 <input className='' type="file" onChange={onChange} onSelect={()=> alert(9)}/>
+                 <input className='' type="file" onChange={onChange} />
                 <br />
                 <br />
-                {/* <img width={600} src={image } alt='git image'/> */}
+                
                 <Cropper 
                  initialAspectRatio={1}
                  preview=".img-preview"
@@ -65,6 +88,7 @@ const Crop: React.FC = () => {
                     background={false}
                     responsive={true}
                     aspectRatio={1/1}
+                    rotatable={true}
 
                     checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
                     onInitialized={(instance) => {
@@ -75,7 +99,7 @@ const Crop: React.FC = () => {
             <div>
 
                 <div className="box" style={{ width: "50%", float: "right" }}>
-                    <h1>Preview</h1>
+                    <h1>Изменить</h1>
                     <div
                         className="img-preview"
                         style={{ }}
@@ -84,26 +108,23 @@ const Crop: React.FC = () => {
                         <span className="circle" aria-hidden="true">
                         <span className="icon arrow"></span>
                         </span>
-                        <span className="button-text">Crop Image</span>
+                        <span className="button-text">   обрезать</span>
                     </button>
                 </div>
 
                 <div className="box"
                 style={{ width: "50%", float: "right", height: "300px" }}>
                     <h1>
-                        <span>Crop</span>
-                        {/* <button className='crop_btn' style={{ float: "right" }} onClick={getCropData}>
-                        Crop Image
-                        </button> */}
+                        <span>Оставить</span>
                         
                         
                     </h1>
-                    <img className='cropped_img' src={cropData} alt="cropped" />
-                    <button className="learn-more">
+                    <img className='cropped_img' src={cropData} alt="Картинку не выбрали" />
+                    <button onClick={() => close()} className="learn-more">
                         <span className="circle" aria-hidden="true">
                         <span className="icon arrow"></span>
                         </span>
-                        <span className="button-text">Сохранить</span>
+                        <span className="button-text">Готово</span>
                     </button>
                 </div>
             </div>
