@@ -1,17 +1,39 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Cropper } from 'react-cropper';
 import "cropperjs/dist/cropper.css"
 
 const defaultSrc =
   "https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg";
 
-const Crop: React.FC = ({readURL, close, setUrl, id} : any) => {
+const Crop: React.FC = ({readURL, close, setUrl, id, userImage} : any) => {
     const [img, setImg] = useState({});
     const [image, setImage] = useState()
     const [cropData, setCropData] = useState(defaultSrc)
     const [cropper, setCropper] = useState<Cropper>()
     const imageRef = useRef<HTMLImageElement>(null)
     // const { changePhoto } = useActions();
+
+    useEffect(() =>{
+        if (userImage ){
+            console.log(userImage);
+            (async () => {   
+                const name = new Date
+                const imgFile: any = await convertDataURLToImageData(userImage, "Снимок экрана от 2022-11-22 14-59-33.png" , "image/png")
+                // .then((imageData) => imageData )//вопрос к расширениям
+                console.log('\x1b[34m data URL новой картинки',userImage)
+                console.log('\x1b[34m Первичный файл картинки',img); 
+                console.log('\x1b[34m Новый сформированный файл картинки',imgFile);
+                 const reader = new FileReader()
+                reader.onload = () => {
+                    setImage(userImage);
+                    // console.log(reader.result);
+                }
+                reader.readAsDataURL(imgFile)
+                setImg(img)
+            })();  
+
+        }
+    }, [])
 
     const onChange = (e: any) => {
         e.preventDefault()
